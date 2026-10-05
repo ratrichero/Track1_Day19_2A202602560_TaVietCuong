@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VLearn — Hành Trình Thiết Kế & Thực Nghiệm Human–AI (Lab Day 18)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --bg: #0B0F19;
+      --surface: #111827;
+      --surface-card: rgba(17, 24, 39, 0.75);
+      --surface-border: rgba(255, 255, 255, 0.08);
+      --surface-border-hover: rgba(255, 255, 255, 0.18);
+      --text-main: #F9FAFB;
+      --text-sub: #94A3B8;
+      --text-muted: #64748B;
+      --primary: #3B82F6;
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      --amber: #F59E0B;
+      --amber-glow: rgba(245, 158, 11, 0.2);
+      --emerald: #10B981;
+      --emerald-glow: rgba(16, 185, 129, 0.2);
+      --rose: #F43F5E;
+      --purple: #8B5CF6;
+      --radius-sm: 8px;
+      --radius: 14px;
+      --radius-lg: 20px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      --shadow-glow: 0 0 35px rgba(59, 130, 246, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 65%, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 35%);
+      background-attachment: fixed;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header & Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60A5FA;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(8px);
+      letter-spacing: 0.5px;
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-sub);
+      max-width: 760px;
+      margin: 0 auto 24px;
+    }
+
+    .team-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      padding: 10px 20px;
+      border-radius: var(--radius-lg);
+      font-size: 13.5px;
+      box-shadow: var(--shadow);
+    }
+
+    .team-badge {
+      background: linear-gradient(135deg, #2563EB, #7C3AED);
+      color: #fff;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    /* Nav Anchor Bar */
+    .quick-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 35px 0 50px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      color: var(--text-sub);
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border-color: var(--surface-border-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Section Components */
+    .section-wrap {
+      margin-bottom: 70px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .section-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--surface-border);
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Glass Cards */
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      border-color: var(--surface-border-hover);
+    }
+
+    /* Problem Hypothesis Banner */
+    .hypothesis-box {
+      border-left: 4px solid var(--primary);
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.08) 0%, rgba(17, 24, 39, 0.6) 100%);
+      padding: 24px;
+      border-radius: var(--radius);
+      margin-bottom: 30px;
+    }
+
+    .hypothesis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .h-step {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+
+    .h-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #60A5FA;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* 3 Solutions Grid */
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .sol-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-top: 4px solid transparent;
+    }
+
+    .sol-a { border-top-color: var(--amber); }
+    .sol-b { border-top-color: var(--primary); }
+    .sol-c { border-top-color: var(--emerald); }
+
+    .sol-top {
+      margin-bottom: 20px;
+    }
+
+    .sol-tag {
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .tag-a { background: rgba(245, 158, 11, 0.15); color: #FBBF24; }
+    .tag-b { background: rgba(59, 130, 246, 0.15); color: #93C5FD; }
+    .tag-c { background: rgba(16, 185, 129, 0.15); color: #6EE7B7; }
+
+    .sol-name {
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .sol-owner {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .sol-mech {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+      color: #CBD5E1;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .feature-list li span.bullet {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* Triangulation Test Data Section */
+    .triad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .tester-card {
+      background: rgba(17, 24, 39, 0.6);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .tester-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .tester-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .score-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .quote-box {
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 3px solid var(--primary);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      font-style: italic;
+      color: #E2E8F0;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    /* Convergence Matrix Table */
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin-top: 16px;
+    }
+
+    .matrix-table th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 700;
+      color: #94A3B8;
+      border-bottom: 2px solid var(--surface-border);
+    }
+
+    .matrix-table td {
+      padding: 14px;
+      border-bottom: 1px solid var(--surface-border);
+      vertical-align: top;
+      color: #CBD5E1;
+    }
+
+    .matrix-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Breakthrough Next Change Banner */
+    .next-change-card {
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(88, 28, 135, 0.4) 100%);
+      border: 1.5px solid rgba(147, 197, 253, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      box-shadow: 0 0 50px rgba(59, 130, 246, 0.15);
+      position: relative;
+    }
+
+    .nc-badge {
+      display: inline-block;
+      background: #3B82F6;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.8px;
+      margin-bottom: 14px;
+    }
+
+    .nc-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .nc-desc {
+      font-size: 16px;
+      color: #E2E8F0;
+      line-height: 1.6;
+      max-width: 880px;
+      margin-bottom: 28px;
+    }
+
+    .nc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .nc-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .nc-box-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Prototype Launchpad Bar */
+    .launchpad-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14.5px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-test {
+      background: #2563EB;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-test:hover {
+      background: #1D4ED8;
+      transform: translateY(-2px);
+    }
+
+    .btn-proto {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid var(--surface-border);
+    }
+
+    .btn-proto:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--surface-border);
+      padding-top: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .card, .next-change-card { padding: 20px; }
+      .launchpad-card { flex-direction: column; align-items: stretch; }
+      .btn-action { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Hero Header -->
+    <header class="hero">
+      <div class="badge-pill">
+        <span>🚀</span>
+        <span>LAB TRACK 1 • DAY 18 COMPLETE PRESENTATION</span>
+      </div>
+      <h1 class="hero-title">
+        Từ Giả Thuyết Vướng Mắc Đến Đột Phá Thiết Kế Tương Tác Human–AI
+      </h1>
+      <p class="hero-sub">
+        Case A — AI Tutor: Diagnostic Refresher • Kiểm chứng thực nghiệm đa chiều qua 3 phương án thiết kế độc lập và 3 Tester ngoài nhóm.
+      </p>
+
+      <div class="team-bar">
+        <span class="team-badge">NHÓM FINTECH</span>
+        <span><b>Tạ Việt Cường</b> (2A202602560)</span>
+        <span style="opacity: 0.3;">•</span>
+        <span>Nguyễn Văn Thăng</span>
+        <span style="opacity: 0.3;">•</span>
+        <span>Nguyễn Anh Dũng</span>
+      </div>
+
+      <!-- Quick Nav Buttons -->
+      <nav class="quick-nav">
+        <a href="#hypothesis" class="nav-btn">🎯 Giả Thuyết Bài Toán</a>
+        <a href="#solutions" class="nav-btn">⚡ 3 Phương Án Thiết Kế</a>
+        <a href="#test-data" class="nav-btn">📊 Dữ Liệu Test Thực Tế (Triad)</a>
+        <a href="#next-change" class="nav-btn">💡 Đột Phá Next Change</a>
+        <a href="test/index.html" class="nav-btn" style="color: #60A5FA; border-color: rgba(96, 165, 250, 0.3);">🧪 Mở Bản Test Live</a>
+      </nav>
+    </header>
+
+    <!-- ============================================== -->
+    <!-- SECTION 1: HYPOTHESIS PROBLEM -->
+    <!-- ============================================== -->
+    <section class="section-wrap" id="hypothesis">
+      <div class="section-header">
+        <div class="section-icon">🎯</div>
+        <div>
+          <h2 class="section-title">1. Giả Thuyết Bài Toán & Bối Cảnh (Hypothesis Problem)</h2>
+          <p class="section-desc">Kế thừa trực tiếp từ Note phỏng vấn Day 17 và đo lường qua tình huống học tập thực tế</p>
+        </div>
+      </div>
+
+      <div class="card hypothesis-box">
+        <p style="font-size: 16.5px; font-weight: 600; color: #F1F5F9; line-height: 1.6;">
+          “Khi đang học bài mới trên VLearn mà bị mắc kẹt ở đoạn không hiểu (làm sai quiz cuối bài 2 lần), người học gặp khó khăn trong việc hiểu tiếp bài vì <b>không xác định được mình đang thiếu khái niệm nền nào</b>, dẫn đến ôn lan man / sai chỗ, mất 30–60 phút mà vẫn không hiểu, làm sai tiếp và dễ bỏ dở bài.”
+        </p>
+
+        <div class="hypothesis-grid">
+          <div class="h-step">
+            <span class="h-tag">Bối cảnh (Situation)</span>
+            <span style="font-size: 13.5px;">Học bài 4 RAG trên VLearn, làm sai cả 2 câu kiểm tra cuối bài (Chunk overlap &amp; Top-k).</span>
+          </div>
+          <div class="h-step">
+            <span class="h-tag">Mục tiêu (Outcome Job)</span>
+            <span style="font-size: 13.5px;">Xác định đúng lỗ hổng cốt lõi, làm lại đúng bài kiểm tra và quay lại bài học trong &lt; 10 phút.</span>
+          </div>
+          <div class="h-step">
+            <span class="h-tag">Rào cản (Barrier)</span>
+            <span style="font-size: 13.5px;">Không biết mình đang hổng ở đâu (công thức, khái niệm hay suy luận), dẫn đến ôn lan man.</span>
+          </div>
+          <div class="h-step">
+            <span class="h-tag">Hậu quả (Consequence)</span>
+            <span style="font-size: 13.5px;">Mất 60 phút tra cứu Google/YouTube vô định, làm sai tiếp và tắt máy bỏ dở khóa học.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SECTION 2: THREE SOLUTION OPTIONS -->
+    <!-- ============================================== -->
+    <section class="section-wrap" id="solutions">
+      <div class="section-header">
+        <div class="section-icon">⚡</div>
+        <div>
+          <h2 class="section-title">2. Ba Phương Án Tương Tác Human–AI Khác Biệt</h2>
+          <p class="section-desc">Cùng chia sẻ 70% bối cảnh (Quiz sai 2 lần + Slide 8–10) nhưng khác biệt có ý nghĩa ở Mechanism &amp; Agency</p>
+        </div>
+      </div>
+
+      <div class="solution-grid">
+
+        <!-- Solution A -->
+        <div class="card sol-card sol-a">
+          <div class="sol-top">
+            <span class="sol-tag tag-a">OPTION A • AI-INITIATED</span>
+            <h3 class="sol-name">Trợ Lý Gợi Ý Hướng Dẫn</h3>
+            <div class="sol-owner">Phụ trách: Nguyễn Anh Dũng • Cơ chế 2 bước</div>
+            <p class="sol-mech">
+              Khi học viên làm sai, AI chủ động phát hiện và đưa thông báo mời nhận gợi ý. Khi bấm, mở màn hình tích hợp: phía trên là chẩn đoán lỗi sai, phía dưới là 3 lựa chọn hành động.
+            </p>
+            <ul class="feature-list">
+              <li><span class="bullet">✓</span> Trước kích hoạt: Banner nhã nhặn không làm phiền</li>
+              <li><span class="bullet">✓</span> Phân tích cụ thể: Ví dụ lợp ngói 15–20% trực quan</li>
+              <li><span class="bullet">✓</span> 3 Lựa chọn: Làm lại câu 1 / Đổi Top-k / Tự học</li>
+            </ul>
+          </div>
+          <div style="border-top: 1px solid var(--surface-border); padding-top: 14px; font-size: 12.5px; color: var(--text-muted);">
+            ⚖️ <b>Đánh đổi:</b> Nhanh và rõ ràng nhưng luồng cứng cố định, người học khó hỏi thêm chi tiết riêng.
+          </div>
+        </div>
+
+        <!-- Solution B -->
+        <div class="card sol-card sol-b" style="border-width: 2px;">
+          <div class="sol-top">
+            <span class="sol-tag tag-b">OPTION B • USER-LED (TRỌNG TÂM)</span>
+            <h3 class="sol-name">Đối Thoại 2 Chiều &amp; Quyền User</h3>
+            <div class="sol-owner">Phụ trách: Tạ Việt Cường • Quyền làm chủ cao nhất</div>
+            <p class="sol-mech">
+              Luồng chat 2 chiều Người ↔ AI. Người học nắm quyền tối cao với bộ công cụ điều phối góc nhìn giải thích theo ý muốn và vùng tự sửa ghi chú học tập.
+            </p>
+            <ul class="feature-list">
+              <li><span class="bullet">✓</span> Bộ 3 nút Agency: Ví dụ đời thực, Bảng so sánh, Tóm tắt 1 câu</li>
+              <li><span class="bullet">✓</span> Ô ghi chú cá nhân: Cho phép người học tự gõ sửa để nhớ bài</li>
+              <li><span class="bullet">✓</span> Tự do đặt câu hỏi riêng qua input chat tùy ý</li>
+            </ul>
+          </div>
+          <div style="border-top: 1px solid var(--surface-border); padding-top: 14px; font-size: 12.5px; color: var(--text-muted);">
+            ⚖️ <b>Đánh đổi:</b> Tối đa tự do nhưng người học phải tự suy nghĩ câu hỏi khi đang bị rối kiến thức.
+          </div>
+        </div>
+
+        <!-- Solution C -->
+        <div class="card sol-card sol-c">
+          <div class="sol-top">
+            <span class="sol-tag tag-c">OPTION C • AUTONOMOUS BACKGROUND</span>
+            <h3 class="sol-name">Hệ Thống Tự Động &amp; Ngoại Lệ</h3>
+            <div class="sol-owner">Phụ trách: Nguyễn Văn Thăng • Rảnh tay tối đa</div>
+            <p class="sol-mech">
+              AI tự động phân tích log làm bài ngầm và tạo sẵn Gói bổ túc 60 giây. Người dùng giữ quyền kiểm soát tại 2 cổng: Phê duyệt (Approve) hoặc Báo ngoại lệ (Override).
+            </p>
+            <ul class="feature-list">
+              <li><span class="bullet">✓</span> Tạo sẵn giải pháp ngay lập tức khi phát hiện nộp bài sai</li>
+              <li><span class="bullet">✓</span> Cổng Duyệt 1-click để áp dụng làm lại quiz siêu tốc</li>
+              <li><span class="bullet">✓</span> Cổng Ngoại lệ với 3 lý do để thu hồi quyền tự động của AI</li>
+            </ul>
+          </div>
+          <div style="border-top: 1px solid var(--surface-border); padding-top: 14px; font-size: 12.5px; color: var(--text-muted);">
+            ⚖️ <b>Đánh đổi:</b> Tối đa tốc độ nhưng người học dễ bị động, lo ngại AI tự đoán mò làm sót kiến thức.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SECTION 3: REAL USER TESTING DATA (TRIAD) -->
+    <!-- ============================================== -->
+    <section class="section-wrap" id="test-data">
+      <div class="section-header">
+        <div class="section-icon">📊</div>
+        <div>
+          <h2 class="section-title">3. Dữ Liệu Thực Nghiệm &amp; Sự Hội Tụ Bằng Chứng (Triangulation)</h2>
+          <p class="section-desc">Ghi nhận độc lập từ 3 Tester ngoài nhóm (20 phút/tester) — Không ngụy tạo số liệu, không tâng bốc</p>
+        </div>
+      </div>
+
+      <!-- 3 Tester Cards -->
+      <div class="triad-grid">
+        
+        <!-- Tester 1 -->
+        <div class="tester-card">
+          <div class="tester-head">
+            <span class="tester-title">Tester 1 (Cường facilitate)</span>
+            <span class="score-badge" style="color: #60A5FA;">Lưu Xuân Dũng (MSHV: 02746)</span>
+          </div>
+          <div class="quote-box">
+            “Luồng hơi ép buộc người dùng vào một khuôn, chưa cho người dùng control được.”
+          </div>
+          <div class="quote-box">
+            “Khi người dùng chưa hiểu bài thì vẫn chưa biết cần hỏi AI về vấn đề gì.”
+          </div>
+          <div class="quote-box">
+            “Có giải thích tổng quát nhưng chưa cho phép người dùng hỏi lại khi chưa hiểu.”
+          </div>
+          <div style="font-size: 12.5px; margin-top: 10px; color: var(--text-muted);">
+            👉 <b>Chọn: Option B</b> (Chấp nhận tốn công hơn để được tự làm chủ).
+          </div>
+        </div>
+
+        <!-- Tester 2 -->
+        <div class="tester-card">
+          <div class="tester-head">
+            <span class="tester-title">Tester 2 (Thăng facilitate)</span>
+            <span class="score-badge" style="color: #34D399;">Sinh viên SE Năm 4</span>
+          </div>
+          <div class="quote-box">
+            “Option A: Gợi ý xuất hiện đúng lúc, ví dụ lợp ngói dễ hiểu (5/5 Help) nhưng chưa cho tự do gõ câu hỏi.”
+          </div>
+          <div class="quote-box">
+            “Option B: Đôi khi chính tôi chưa hiểu rõ là tôi nên đặt câu hỏi gì, dẫn đến việc đặt câu hỏi không tối ưu.”
+          </div>
+          <div class="quote-box">
+            “Option C: Trải nghiệm hơi bị động (Control: 2/5), lo ngại sẽ bị sót thông tin khi AI đã định hướng sẵn.”
+          </div>
+          <div style="font-size: 12.5px; margin-top: 10px; color: var(--text-muted);">
+            👉 <b>Chọn: Phân vân A &amp; B</b> (Thấy rõ trade-off chưa trọn vẹn ở cả 3).
+          </div>
+        </div>
+
+        <!-- Tester 3 -->
+        <div class="tester-card">
+          <div class="tester-head">
+            <span class="tester-title">Tester 3 (Dũng facilitate)</span>
+            <span class="score-badge" style="color: #FBBF24;">Sinh viên AI &amp; Data Năm 3</span>
+          </div>
+          <div class="quote-box">
+            “Option A giải thích lợp ngói hiểu nhanh, nhưng luồng ban đầu khá định hướng; muốn hỏi chi tiết riêng thì chưa tiện.”
+          </div>
+          <div class="quote-box">
+            “Option B cho đổi cách giải thích rất hay, nhưng lúc đang bí kiến thức có thể không biết nên chọn cách hỏi nào trước.”
+          </div>
+          <div class="quote-box">
+            “Option C: AI tự kết luận 80% lỗi ở overlap khiến tôi hơi lo nếu nguyên nhân thật sự là Top-k hoặc đọc nhầm đề.”
+          </div>
+          <div style="font-size: 12.5px; margin-top: 10px; color: var(--text-muted);">
+            👉 <b>Chọn: Option B</b> (Cần thêm câu hỏi gợi ý để không bị bí ban đầu).
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Synthesis Matrix Table -->
+      <div class="card" style="padding: 24px; overflow-x: auto;">
+        <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #fff;">
+          🔍 Bảng Hội Tụ Bằng Chứng Độc Lập Giữa 3 Tester (Pattern Convergence)
+        </h3>
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Phương Án Thử Nghiệm</th>
+              <th style="width: 20%;">Điểm Kiểm Soát (Control)</th>
+              <th style="width: 20%;">Độ Hữu Ích (Helpfulness)</th>
+              <th style="width: 35%;">Điểm Nghẽn Tương Tác Hội Tụ (Breakdown chung)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b style="color: #FBBF24;">Option A (Gợi Ý)</b></td>
+              <td>⭐ 4.5 / 5 (Cao)</td>
+              <td>⭐ 5.0 / 5 (Tuyệt đối)</td>
+              <td>Khen ngợi ví dụ lợp ngói trực quan, nhưng <b>3/3 tester đều thấy bị gò bó</b>, thiếu khả năng gõ câu hỏi hoặc hỏi đào sâu vào chi tiết riêng.</td>
+            </tr>
+            <tr>
+              <td><b style="color: #60A5FA;">Option B (Đối Thoại)</b></td>
+              <td>⭐ 4.5 / 5 (Rất cao)</td>
+              <td>⭐ 5.0 / 5 (Tuyệt đối)</td>
+              <td>Rất chuộng quyền tự do đổi góc độ, nhưng <b>3/3 tester đều gặp hiện tượng Tê Liệt Nhận Thức</b>: khi đang bị bí bài thì không biết hỏi gì / hỏi không tối ưu.</td>
+            </tr>
+            <tr>
+              <td><b style="color: #34D399;">Option C (Tự Động)</b></td>
+              <td>⭐ 2.3 / 5 (Thấp nhất)</td>
+              <td>⭐ 4.0 / 5 (Tốt)</td>
+              <td>Thừa nhận rất nhanh, nhưng <b>3/3 tester đều lo ngại bị tước quyền kiểm soát</b> và sợ AI tự đoán mò dẫn đến bỏ sót kiến thức.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SECTION 4: BREAKTHROUGH NEXT CHANGE -->
+    <!-- ============================================== -->
+    <section class="section-wrap" id="next-change">
+      <div class="section-header">
+        <div class="section-icon">💡</div>
+        <div>
+          <h2 class="section-title">4. Đột Phá Thiết Kế: Quyết Định Next Change Nhóm Chốt</h2>
+          <p class="section-desc">Giải quyết triệt để Nghịch lý Kiểm soát: Kết hợp Scaffolding định hướng của A với In-context Drill-down của B</p>
+        </div>
+      </div>
+
+      <div class="next-change-card">
+        <span class="nc-badge">CHỐT 1 NEXT CHANGE DUY NHẤT (GATE 5)</span>
+        <h3 class="nc-title">Cơ Chế "Hybrid Scaffolded Drill-down"</h3>
+        <p class="nc-desc">
+          Thay vì bắt người học chọn giữa việc <b>"bị ép vào khuôn cứng" (Option A)</b> hay <b>"bị bơ vơ trước chatbox trống" (Option B)</b>, hệ thống mới kết hợp ưu thế tối đa của cả hai giải pháp:
+        </p>
+
+        <div class="nc-grid">
+          
+          <div class="nc-box">
+            <div class="nc-box-title" style="color: #FBBF24;">
+              <span>🧭</span>
+              <span>1. Giàn Giáo Định Hướng (Scaffolding từ A)</span>
+            </div>
+            <p style="font-size: 13.5px; color: #CBD5E1; line-height: 1.55;">
+              Giải quyết dứt điểm nhận xét <i>"không biết hỏi gì khi chưa hiểu"</i>: AI tự động phân tích câu sai và bóc tách sẵn 2–3 <b>nghi vấn cốt lõi</b> (ví dụ: *"Tại sao cắt cụt câu làm mất ngữ cảnh?"*) để người học không bị tê liệt nhận thức.
+            </p>
+          </div>
+
+          <div class="nc-box">
+            <div class="nc-box-title" style="color: #60A5FA;">
+              <span>🔍</span>
+              <span>2. Hỏi Đào Sâu Theo Ngữ Cảnh (Drill-down từ B)</span>
+            </div>
+            <p style="font-size: 13.5px; color: #CBD5E1; line-height: 1.55;">
+              Giải quyết dứt điểm nhận xét <i>"chưa cho tự do gõ / hỏi lại khi chưa hiểu"</i>: Trong lời giải thích của AI, cho phép người học <b>click trực tiếp vào bất kỳ từ khóa nào chưa hiểu (ví dụ click vào 'mất ngữ cảnh') để mở ô chat đào sâu tại chỗ</b>.
+            </p>
+          </div>
+
+          <div class="nc-box">
+            <div class="nc-box-title" style="color: #34D399;">
+              <span>🛡️</span>
+              <span>3. Bảo Toàn Quyền Tự Chủ (Human Agency)</span>
+            </div>
+            <p style="font-size: 13.5px; color: #CBD5E1; line-height: 1.55;">
+              Giải quyết nỗi lo <i>"bị động &amp; AI tự quyết định làm sót bài"</i> của Option C: Loại bỏ việc tự động cập nhật bài làm ngầm. Người học tự tay chọn lại đáp án sau khi đã thực sự hiểu bài thông qua luồng hỏi đáp tương tác.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Still Unproven Notice -->
+        <div style="margin-top: 24px; padding: 14px 18px; background: rgba(0,0,0,0.3); border-radius: 8px; border-left: 3px solid #F43F5E;">
+          <b style="font-size: 13.5px; color: #FDA4AF; display: block; margin-bottom: 4px;">⚠️ Điều chưa thể kết luận (Still Unproven sau 3 feedback):</b>
+          <span style="font-size: 13px; color: #CBD5E1; line-height: 1.5;">
+            Chưa chứng minh được liệu tính năng "click vào từ khóa để hỏi sâu vô tận" có khiến người học bị phân tâm, hỏi lan man sang chủ đề khác và phá vỡ mục tiêu hoàn thành bài học trong &lt;10 phút hay không. Cần kiểm chứng ở vòng test tiếp theo!
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SECTION 5: PROTOTYPE LAUNCHPAD -->
+    <!-- ============================================== -->
+    <section>
+      <div class="launchpad-card">
+        <div>
+          <h3 style="font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 4px;">
+            Trải Nghiệm Trực Tiếp Các Bản Prototype Độc Lập
+          </h3>
+          <p style="font-size: 13.5px; color: var(--text-muted);">
+            Tất cả prototype đều được xây dựng thuần HTML/CSS/JS độc lập, mở và thao tác ngay trên trình duyệt mà không cần cài đặt.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="test/index.html" class="btn-action btn-test" target="_blank">
+            <span>🧪</span>
+            <span>Mở Bản Test Người Dùng (`test/`)</span>
+          </a>
+          <a href="prototype/index.html" class="btn-action btn-proto" target="_blank">
+            <span>🏛️</span>
+            <span>Mở Bản Chấm Điểm Thiết Kế (`prototype/`)</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>Đồ Án Môn Học: Human–AI Interaction Design • Track 1 Day 18 • Nhóm FinTech</div>
+      <div style="margin-top: 6px; color: var(--text-sub);">Tạ Việt Cường (2A202602560) • Nguyễn Văn Thăng • Nguyễn Anh Dũng</div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
